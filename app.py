@@ -54,27 +54,45 @@ def display_menu():
             print("Allowed options are v,a,b or q.")
 
 def display_product():
-    product_id = int(input("What is the product ID?: "))
-    product = session.query(Product).filter(Product.product_id == product_id).first()
-    if product:
-      print(f"\n\nID: {product.product_id}")
-      print(f"Product Name: {product.product_name}")
-    else:
-        print("\n\nProduct with this ID does not exist.")
+    try:
+      product_id = int(input("What is the product ID?: "))
+      product = session.query(Product).filter(Product.product_id == product_id).first()
+      if product:
+        print(f"\n\nID : {product.product_id}")
+        print(f"Product Name : {product.product_name}")
+        print(f"Product Price : {product.product_price}")
+        print(f"Product Quantity : {product.product_quantity}")
+        print(f"Date : {product.date_updated}")
+      else:
+          print("\n\nProduct with this ID does not exist.")
+    except:
+      print("\nThe ID of the product consists of numbers only. Please try again.")        
 
 def add_new_product():
-    product_name = input("What is the product name?: ").strip()
-    product_quantity = int(input("What is the product quantity?: "))
-    product_price = int(float(input("What is the product price?: ")))
+    try:
+      product_name = input("What is the product name?: ").strip()
 
-    add_product = Product(
-        product_name=product_name,
-        product_quantity=product_quantity,
-        product_price=product_price,
-    )
-    session.add(add_product)
-    session.commit()
-    print("\n\nProduct added.")
+      # Check if product exists already
+      existing_product = session.query(Product).filter(Product.product_name == product_name).first()
+      if existing_product:
+          print(f"\n\nProduct with name {product_name} already exists.")
+          return
+      
+      product_quantity = int(input("What is the product quantity?: "))
+      product_price = int(float(input("What is the product price?: ")))
+      date_updated = datetime.today().date()
+      
+      add_product = Product(
+          product_name=product_name,
+          product_quantity=product_quantity,
+          product_price=product_price,
+          date_updated=date_updated
+      )
+      session.add(add_product)
+      session.commit()
+      print("\n\nProduct added.")
+    except:
+      print("\nThe product quantity and the product price can only be a number (eg. 23, 234, 283).")     
 
 def make_backup():
     with open('backup.csv', 'w', newline='') as file:
@@ -103,7 +121,7 @@ if __name__ == '__main__':
         for row in reader:
           product_name = row['product_name'].strip()
           product_quantity = int(row['product_quantity'])
-          product_price = int(float(row['product_price'].replace('$', '').replace(',', '')))
+          product_price = int(float(row['product_price'].replace('$', '').replace('.', '')))
           date_updated = datetime.strptime(row['date_updated'], '%m/%d/%Y').date()
 
           product_dictionary = {
