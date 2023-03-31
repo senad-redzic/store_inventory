@@ -60,7 +60,7 @@ def display_product():
       if product:
         print(f"\n\nID : {product.product_id}")
         print(f"Product Name : {product.product_name}")
-        print(f"Product Price : {product.product_price}")
+        print(f"Product Price (in cents-¢) : {product.product_price}")
         print(f"Product Quantity : {product.product_quantity}")
         print(f"Date : {product.date_updated}")
       else:
