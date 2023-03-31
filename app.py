@@ -79,7 +79,7 @@ def add_new_product():
           return
       
       product_quantity = int(input("What is the product quantity?: "))
-      product_price = int(float(input("What is the product price?: ")))
+      product_price = int(float(input("What is the product price in dollars ($)?: ").replace('$', '').replace('.', '')))
       date_updated = datetime.today().date()
       
       add_product = Product(
